@@ -24,8 +24,8 @@ const server = http.createServer((req, res) => {
     };
     res.statusCode = 200;
     res.end(JSON.stringify(responseObj));
-  } else if (req.method === "POST" && req.url === "/api/post") {
-    // Handle POST requests to the /api endpoint
+  } else if (req.method === "PUT" && req.url === "/api/put") {
+    // Handle PUT requests to the /api endpoint
     let requestBody = "";
 
     // Listen for data events to collect the request body
@@ -42,8 +42,7 @@ const server = http.createServer((req, res) => {
           database.age = recievedData.age;
         }
         const responseData = {
-          message:
-            "This is the API endpoint (POST), changes made successfully!",
+          message: "This is the API endpoint (PUT), changes made successfully!",
           data: database,
         };
         res.statusCode = 200;
