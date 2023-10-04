@@ -3,6 +3,8 @@ const http = require("http");
 const hostname = "127.0.0.1";
 const port = 8000;
 
+const database = { name: "SR", age: 22 };
+
 const server = http.createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
 
@@ -15,6 +17,13 @@ const server = http.createServer((req, res) => {
     const responseObj = { message: "This is the deep API endpoint" };
     res.statusCode = 200;
     res.end(JSON.stringify(responseObj));
+  } else if (req.method === "GET" && req.url === "/api/database") {
+    const responseObj = {
+      message: "This is the database API endpoint",
+      data: database,
+    };
+    res.statusCode = 200;
+    res.end(JSON.stringify(responseObj));
   } else if (req.method === "POST" && req.url === "/api/post") {
     // Handle POST requests to the /api endpoint
     let requestBody = "";
@@ -22,13 +31,13 @@ const server = http.createServer((req, res) => {
     // Listen for data events to collect the request body
     req.on("data", (chunk) => {
       requestBody += chunk.toString();
-      console.log(requestBody);
     });
 
     // When the request is complete, parse and respond with the data
     req.on("end", () => {
       try {
         const recievedData = JSON.parse(requestBody);
+        console.log("This is the data received:", recievedData);
         const responseData = {
           message: "This is the API endpoint (POST)",
           data: recievedData,
