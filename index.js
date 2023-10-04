@@ -10,16 +10,16 @@ const server = http.createServer((req, res) => {
 
   // Handle GET requests to the /api endpoint
   if (req.method === "GET" && req.url === "/api") {
-    const responseObj = { message: "This is the API endpoint" };
+    const responseObj = { message: "This is the API endpoint (GET)" };
     res.statusCode = 200;
     res.end(JSON.stringify(responseObj));
   } else if (req.method === "GET" && req.url === "/api/deep-api") {
-    const responseObj = { message: "This is the deep API endpoint" };
+    const responseObj = { message: "This is the deep API endpoint (GET)" };
     res.statusCode = 200;
     res.end(JSON.stringify(responseObj));
   } else if (req.method === "GET" && req.url === "/api/database") {
     const responseObj = {
-      message: "This is the database API endpoint",
+      message: "This is the database API endpoint (GET)",
       data: database,
     };
     res.statusCode = 200;
@@ -38,9 +38,13 @@ const server = http.createServer((req, res) => {
       try {
         const recievedData = JSON.parse(requestBody);
         console.log("This is the data received:", recievedData);
+        if (recievedData.age != undefined) {
+          database.age = recievedData.age;
+        }
         const responseData = {
-          message: "This is the API endpoint (POST)",
-          data: recievedData,
+          message:
+            "This is the API endpoint (POST), changes made successfully!",
+          data: database,
         };
         res.statusCode = 200;
         res.end(JSON.stringify(responseData));
