@@ -148,6 +148,65 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: "Invalid JSON data" }));
       }
     });
+  } else if (req.method === "DELETE" && req.url === "/sr-api") {
+    // Handle DELETE requests to the /api endpoint
+    let requestBody = "";
+
+    // Listen for data events to collect the request body
+    req.on("data", (chunk) => {
+      requestBody += chunk.toString();
+    });
+
+    // When the request is complete, parse and respond with the data
+    req.on("end", () => {
+      try {
+        const recievedData = JSON.parse(requestBody);
+        let flag = 0;
+        function isValidData(data) {
+          // Check if 'data' is an object
+          if (typeof data === "object" && data !== null) {
+            // Check if it has 'name' and 'age' properties
+            if (data.hasOwnProperty("name") && data.hasOwnProperty("age")) {
+              return true;
+            }
+          }
+          return false;
+        }
+        if (isValidData(recievedData)) {
+          // Find the index of the object to delete
+          const indexToDelete = database.findIndex(
+            (item) => item.name === recievedData.name
+          );
+
+          if (indexToDelete !== -1) {
+            // Remove the object from the database
+            database.splice(indexToDelete, 1);
+            flag = 1;
+          }
+        }
+
+        if (flag === 0) {
+          res.statusCode = 400;
+          const responseData = {
+            message: "Bad Request",
+            type: "could not find user in database",
+          };
+          res.end(JSON.stringify(responseData));
+        } else {
+          const responseData = {
+            message:
+              "This is the API endpoint (DELETE), changes made successfully!",
+            data: database,
+          };
+          res.statusCode = 200;
+          res.end(JSON.stringify(responseData));
+        }
+      } catch (error) {
+        res.statusCode = 400; // Bad Request
+        console.log("This is error:", error);
+        res.end(JSON.stringify({ error: "Invalid JSON data" }));
+      }
+    });
   } else {
     // Handle other requests with a 404 Not Found response
     res.statusCode = 404;
