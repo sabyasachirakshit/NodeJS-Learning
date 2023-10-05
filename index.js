@@ -122,11 +122,13 @@ const server = http.createServer((req, res) => {
             flag = 1;
           }
           if (flag === 0) {
-            res.statusCode = 400;
+            database.push(recievedData);
             const responseData = {
-              message: "Bad Request",
-              type: "could not find user in database",
+              message:
+                "This is the API endpoint (PUT), changes made successfully!",
+              data: database,
             };
+            res.statusCode = 200;
             res.end(JSON.stringify(responseData));
           } else {
             const responseData = {
