@@ -17,14 +17,16 @@ const server = http.createServer((req, res) => {
     const responseObj = { message: "This is the deep API endpoint (GET)" };
     res.statusCode = 200;
     res.end(JSON.stringify(responseObj));
-  } else if (req.method === "GET" && req.url === "/api/database") {
+  } else if (req.method === "GET" && req.url === "/sr-api") {
     const responseObj = {
-      message: "This is the database API endpoint (GET)",
+      message: "This is the SR database API endpoint (GET)",
       data: database,
     };
     res.statusCode = 200;
     res.end(JSON.stringify(responseObj));
-  } else if (req.method === "PUT" && req.url === "/api/put") {
+  } else if (req.method === "POST" && req.url === "/sr-api") {
+    //Handle POST requests to the /api endpoint
+  } else if (req.method === "PUT" && req.url === "/sr-api") {
     // Handle PUT requests to the /api endpoint
     let requestBody = "";
 
