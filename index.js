@@ -276,6 +276,11 @@ const server = http.createServer((req, res) => {
       res.statusCode = 404; // Resource not found
       res.end(); // No response body for HEAD requests
     }
+  } else if (req.method === "OPTIONS" && req.url === "/sr-api") {
+    res.statusCode = 200;
+    res.end(
+      `http://${hostname}:${port}/sr-api OK Allow: GET, POST, PUT, DELETE, PATCH`
+    );
   } else {
     // Handle other requests with a 404 Not Found response
     res.statusCode = 404;
