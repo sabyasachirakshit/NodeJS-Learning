@@ -263,6 +263,19 @@ const server = http.createServer((req, res) => {
         res.end(JSON.stringify({ error: error }));
       }
     });
+  } else if (req.method === "HEAD" && req.url === "/sr-api") {
+    // Handle HEAD requests to the /sr-api endpoint
+    // HEAD requests do not require a response body, only headers
+
+    // Check if the resource exists in the database
+    const resourceName = req.url; // You might want to parse the URL to extract the resource name
+    if (resourceName === "/sr-api") {
+      res.statusCode = 200; // Resource exists
+      res.end(); // No response body for HEAD requests
+    } else {
+      res.statusCode = 404; // Resource not found
+      res.end(); // No response body for HEAD requests
+    }
   } else {
     // Handle other requests with a 404 Not Found response
     res.statusCode = 404;
