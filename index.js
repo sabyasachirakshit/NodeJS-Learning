@@ -48,15 +48,32 @@ const server = http.createServer((req, res) => {
           }
           return false;
         }
+        function doesDataExist(data) {
+          for (const item of database) {
+            if (item.name === data.name) {
+              return true; // Data exists in the database
+            }
+          }
+          return false; // Data does not exist in the database
+        }
+
         if (isValidData(recievedData)) {
-          database.push(recievedData);
-          const responseData = {
-            message:
-              "This is the API endpoint (POST), changes made successfully!",
-            data: database,
-          };
-          res.statusCode = 200;
-          res.end(JSON.stringify(responseData));
+          if (doesDataExist(recievedData)) {
+            const responseData = {
+              message: "user already exists!",
+            };
+            res.statusCode = 400;
+            res.end(JSON.stringify(responseData));
+          } else {
+            database.push(recievedData);
+            const responseData = {
+              message:
+                "This is the API endpoint (POST), changes made successfully!",
+              data: database,
+            };
+            res.statusCode = 200;
+            res.end(JSON.stringify(responseData));
+          }
         } else {
           const responseData = {
             message: "Invalid JSON parameters",
