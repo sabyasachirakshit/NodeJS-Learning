@@ -53,13 +53,15 @@ const server = http.createServer((req, res) => {
             type: "could not find user in database",
           };
           res.end(JSON.stringify(responseData));
+        } else {
+          const responseData = {
+            message:
+              "This is the API endpoint (PUT), changes made successfully!",
+            data: database,
+          };
+          res.statusCode = 200;
+          res.end(JSON.stringify(responseData));
         }
-        const responseData = {
-          message: "This is the API endpoint (PUT), changes made successfully!",
-          data: database,
-        };
-        res.statusCode = 200;
-        res.end(JSON.stringify(responseData));
       } catch (error) {
         res.statusCode = 400; // Bad Request
         console.log("This is error:", error);
