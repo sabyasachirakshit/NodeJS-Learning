@@ -281,6 +281,44 @@ const server = http.createServer((req, res) => {
     res.end(
       `http://${hostname}:${port}/sr-api OK Allow: GET, POST, PUT, DELETE, PATCH`
     );
+  } else if (req.method === "PROPFIND" && req.url === "/sr-api") {
+    // Handle PROPFIND requests to the /sr-api endpoint
+    // PROPFIND requests typically require an XML response with resource properties
+
+    // Check if the resource exists in the database
+    const resourceName = req.url; // You might want to parse the URL to extract the resource name
+    const matchingObject = database.find((item) => item.name === resourceName);
+
+    if (matchingObject) {
+      // Construct an XML response with resource properties (simplified example)
+      const xmlResponse = `
+        <?xml version="1.0" encoding="utf-8"?>
+        <D:multistatus xmlns:D="DAV:">
+          <D:response>
+            <D:href>${req.url}</D:href>
+            <D:propstat>
+              <D:status>HTTP/1.1 200 OK</D:status>
+              <D:prop>
+                <D:author>${matchingObject.name}</D:author>
+                <D:age>${matchingObject.age}</D:age>
+                <!-- Add more properties here -->
+              </D:prop>
+            </D:propstat>
+          </D:response>
+        </D:multistatus>
+      `;
+
+      res.statusCode = 207; // Multi-Status (WebDAV status code)
+      res.setHeader("Content-Type", "text/xml");
+      res.end(xmlResponse);
+    } else {
+      res.statusCode = 404; // Resource not found
+      res.end(); // No response body for PROPFIND requests
+    }
+  } else if (req.method === "ELIMINATE" && req.url === "/sr-api") {
+    //Custom API
+    res.statusCode = 200;
+    res.end("Eliminate api called");
   } else {
     // Handle other requests with a 404 Not Found response
     res.statusCode = 404;
